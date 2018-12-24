@@ -26,11 +26,17 @@ class Router{
     }
     public function startRouter(){
         if($this->matchRouter()){
-           $controller = 'application\controllers\\'.ucfirst($this->params['controller']).'Controller.php';
-           if(class_exists($controller)){
-
+           $path = 'application\controllers\\'.ucfirst($this->params['controller']).'Controller';
+           if(class_exists($path)){
+                $action = $this->params['action'].'Action';
+                if(method_exists($path, $action)){
+                    $controller = new $path($this->params);
+                    $controller->$action();
+                }else{
+                    echo "Не найден action" . $action;
+                }
            }else{
-                echo "Не найден:". $controller;
+                echo "Не найден controller:". $path;
            }
         }else{
             echo "Маршрут не найден";
